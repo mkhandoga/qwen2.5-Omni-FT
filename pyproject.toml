@@ -1,0 +1,28 @@
+[project]
+name = "qwen_video_classification"
+version = "0.1.0"
+description = "Fine-tuning Qwen2.5-Omni-7B for synthetic video classification with LoRA"
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [
+  { name = "Mykola Khandoga", email = "mkhandoga@gmail.com" }
+]
+dependencies = [
+  "torch>=1.13.0",
+  "torchvision>=0.14.0",
+  "transformers>=4.32.0",
+  "peft>=0.5.0",
+  "accelerate>=0.20.0",
+  "hydra-core>=1.3.2",
+  "omegaconf>=2.3.0",
+  "wandb>=0.15.0",
+  "opencv-python>=4.7.0",
+  "qwen-omni-utils"
+]
+
+[tool.setuptools]
+py-modules = ["dataset", "train", "demo"]
+
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
