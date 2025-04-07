@@ -1,0 +1,52 @@
+defaults:
+  - _self_  # use this config as base (no additional config files included)
+
+dataset:
+  use_video_files: true
+  num_videos: 100       # number of synthetic videos to generate
+  num_classes: 5         # number of action classes (each video has one label)
+  frames_per_video: 8   # number of frames each video will have after augmentations
+  frame_height: 56       # height of video frames (pixels)
+  frame_width: 56        # width of video frames (pixels)
+  max_skip: 3          # maximum temporal stride for frame skipping augmentation
+  seed: 42               # random seed for data generation (ensures reproducibility)
+  temp_folder: "./temp_videos/"
+  delete_videos: False
+
+model:
+  base_model: "Qwen/Qwen2.5-Omni-7B"  # HuggingFace model name or path
+  use_4bit: true        # whether to load the model in 8-bit (for memory efficiency)
+  lora_r: 16             # LoRA rank
+  lora_alpha: 32        # LoRA scaling factor
+  lora_target_modules:
+    - q_proj
+    - v_proj
+    - k_proj
+    - o_proj
+    - gate_proj
+    - up_proj
+    - down_proj
+  lora_weights: "qwen_video_lora"   # directory name to save LoRA adapter weights
+  print_parameters: True
+
+train:
+  batch_size: 1
+  num_epochs: 4
+  learning_rate: 2e-5 
+  precision: "bf16"   # computation precision: "fp16", "bf16", or "fp32"
+  system_prompt: 'You are Qwen, a virtual human developed by the Qwen Team, Alibaba Group, capable of perceiving auditory and visual inputs, as well as generating text and speech.'  # prompt to guide the model's behavior
+  val_split: 0.2
+  eval_after_steps: 10000
+
+wandb:
+  project: "qwen-video-classification"
+  run_name: "qwen_lora_run"
+  mode: "disabled"   # wandb mode: "online", "offline", or "disabled"
+
+demo:
+  video_path: "/home/mykola/blacklab/qwen2.5-Omni-FT/tmp_videos/sample_75_6c12651f6c8f.mp4"   # path to the video file for inference (to be provided by user)
+  base_model: "Qwen/Qwen2.5-Omni-7B"  # base model path (same as model.base_model, can override if needed)
+  lora_weights: "qwen_video_lora"    # path to the fine-tuned LoRA weights (from training output)
+  max_new_tokens: 100   # max tokens to generate for the predicted label
+  use_synthetic_dataset: True
+  num_samples: 5
