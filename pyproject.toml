@@ -22,7 +22,9 @@ dependencies = [
   "pillow>=9.0.0",
   "numpy>=1.21.0",
   "opencv-python>=4.7.0",
-  
+  "bitsandbytes",  
+
+
 ]
 
 [tool.setuptools]
