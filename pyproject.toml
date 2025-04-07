@@ -17,7 +17,12 @@ dependencies = [
   "omegaconf>=2.3.0",
   "wandb>=0.15.0",
   "opencv-python>=4.7.0",
-  "qwen-omni-utils"
+  "qwen-omni-utils",
+  "imageio>=2.9.0",
+  "pillow>=9.0.0",
+  "numpy>=1.21.0",
+  "opencv-python>=4.7.0",
+  
 ]
 
 [tool.setuptools]

@@ -127,15 +127,7 @@ class VideoPrefetchWrapper:
                     video, self.tmp_dir, prefix=f"sample_{idx}", fps=self.fps
                 )
                 self.generated_paths.append(video_path)
-
-                video_dict = {
-                    "video": video_path,
-                    "resized_height": self.resized_height,
-                    "resized_width": self.resized_width,
-                    "max_pixels": self.resized_height * self.resized_width,
-                    "force_exact_resize": True,
-                }
-                return video_dict, label
+                return video_path, label
             else:
                 return video, label  # pass frames directly
 
