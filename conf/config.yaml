@@ -30,7 +30,7 @@ model:
   print_parameters: True
 
 train:
-  batch_size: 2
+  batch_size: 1
   num_epochs: 4
   learning_rate: 2e-5 
   precision: "bf16"   # computation precision: "fp16", "bf16", or "fp32"
