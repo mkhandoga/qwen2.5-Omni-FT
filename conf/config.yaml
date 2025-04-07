@@ -2,10 +2,10 @@ defaults:
   - _self_  # use this config as base (no additional config files included)
 
 dataset:
-  use_video_files: true
+  use_video_files: false
   num_videos: 100       # number of synthetic videos to generate
   num_classes: 5         # number of action classes (each video has one label)
-  frames_per_video: 8   # number of frames each video will have after augmentations
+  frames_per_video: 16   # number of frames each video will have after augmentations
   frame_height: 56       # height of video frames (pixels)
   frame_width: 56        # width of video frames (pixels)
   max_skip: 3          # maximum temporal stride for frame skipping augmentation
@@ -30,7 +30,7 @@ model:
   print_parameters: True
 
 train:
-  batch_size: 1
+  batch_size: 2
   num_epochs: 4
   learning_rate: 2e-5 
   precision: "bf16"   # computation precision: "fp16", "bf16", or "fp32"
