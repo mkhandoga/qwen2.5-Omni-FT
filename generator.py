@@ -1,7 +1,6 @@
 import random
 import numpy as np
 from PIL import Image
-import torch
 from torch.utils.data import Dataset
 
 class SyntheticVideoDataset(Dataset):
@@ -26,7 +25,7 @@ class SyntheticVideoDataset(Dataset):
         
         # Define class names
         self.classes = [f"class_{i}" for i in range(num_classes)]
-        predefined_names = ["horizontal_move", "vertical_move", "blinking_dot", "random_teleport", "bouncing_diag"]
+        predefined_names = ["horizontal move", "vertical move", "stationary", "random move", "diagonal move"]
         for i, name in enumerate(predefined_names):
             if i < num_classes:
                 self.classes[i] = name

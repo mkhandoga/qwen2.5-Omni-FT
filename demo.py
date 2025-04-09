@@ -76,10 +76,9 @@ def main(cfg: DictConfig):
     model = model.to(device)
     model.thinker = PeftModel.from_pretrained(model.thinker, cfg.demo.lora_weights)
     model.eval()
-
     processor = Qwen2_5OmniProcessor.from_pretrained(cfg.model.base_model)
     sys_prompt = cfg.train.system_prompt
-    prompt_text = "Please classify this video. Choose one of: horizontal_move, vertical_move, blinking_dot, random_teleport, bouncing_diag. Respond with only the label."
+    prompt_text = "Please classify this video. Choose one of: horizontal move, vertical move, stationary, random move, diagonal move. Respond with only the label."
 
     if cfg.demo.use_synthetic_dataset:
         dataset = SyntheticVideoDataset(

@@ -2,22 +2,22 @@ defaults:
   - _self_  # use this config as base (no additional config files included)
 
 dataset:
-  use_video_files: false
+  use_video_files: False
   num_videos: 100       # number of synthetic videos to generate
   num_classes: 5         # number of action classes (each video has one label)
-  frames_per_video: 16   # number of frames each video will have after augmentations
+  frames_per_video: 96   # number of frames each video will have after augmentations
   frame_height: 56       # height of video frames (pixels)
   frame_width: 56        # width of video frames (pixels)
-  max_skip: 3          # maximum temporal stride for frame skipping augmentation
+  max_skip: 1          # maximum temporal stride for frame skipping augmentation
   seed: 42               # random seed for data generation (ensures reproducibility)
   temp_folder: "./temp_videos/"
   delete_videos: False
 
 model:
   base_model: "Qwen/Qwen2.5-Omni-7B"  # HuggingFace model name or path
-  use_4bit: true        # whether to load the model in 8-bit (for memory efficiency)
-  lora_r: 16             # LoRA rank
-  lora_alpha: 32        # LoRA scaling factor
+  use_4bit: False        # whether to load the model in 4-bit (for memory efficiency)
+  lora_r: 64             # LoRA rank
+  lora_alpha: 128        # LoRA scaling factor
   lora_target_modules:
     - q_proj
     - v_proj
@@ -30,8 +30,8 @@ model:
   print_parameters: True
 
 train:
-  batch_size: 1
-  num_epochs: 4
+  batch_size: 4
+  num_epochs: 8
   learning_rate: 2e-5 
   precision: "bf16"   # computation precision: "fp16", "bf16", or "fp32"
   system_prompt: 'You are Qwen, a virtual human developed by the Qwen Team, Alibaba Group, capable of perceiving auditory and visual inputs, as well as generating text and speech.'  # prompt to guide the model's behavior

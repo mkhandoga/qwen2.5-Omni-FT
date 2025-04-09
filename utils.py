@@ -280,12 +280,12 @@ def get_data_loaders(cfg):
 
     classification_prompt = (
     "Please classify this video. Choose one of: "
-    + ", ".join(train_dataset.classes ) + ". Respond with only the label."
+    + ", ".join(train_dataset.classes )
     )
     train_dataset = VideoPrefetchWrapper(
         train_dataset,
         tmp_dir=cfg.dataset.temp_folder,
-        fps=2,
+        fps=24,
         resized_height=cfg.dataset.frame_height,
         resized_width=cfg.dataset.frame_width,
         use_video_files=cfg.dataset.use_video_files,  

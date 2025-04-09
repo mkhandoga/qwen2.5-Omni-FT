@@ -72,9 +72,9 @@ The model and LoRA weights are saved at the end of training (default output dire
 
 ### Demo: Video Classification Inference
 Use `demo.py` to run the trained model on a new video and get a predicted label. For example:
-```bash
-python demo.py demo.video_path="path/to/your_video.mp4"
-```
+
 The script will load the base Qwen2.5-Omni-7B model and apply the fine-tuned LoRA weights from the training output (by default it looks for the adapter in the `qwen_video_lora/` directory). It will then print the predicted class label for the video.
+
+An even better demonstration is available in `demo.ipynb` where the generated videos are shown interactively along with the model predictions.
 
 Note: The synthetic dataset in this example consists of simple moving-dot patterns. The model fine-tunes to recognize these specific patterns. For a real-world use, you would replace the synthetic data generation with your actual video dataset (e.g., processed frames from videos and labels) and fine-tune similarly. This project is meant to showcase the pipeline structure (data, training, inference) rather than achieve state-of-the-art accuracy on real video data.
