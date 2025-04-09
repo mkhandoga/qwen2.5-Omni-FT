@@ -12,6 +12,7 @@ This project provides a complete training pipeline to fine-tune Alibaba's Qwen2.
 - `generator.py` – Synthetic video dataset generation and augmentation (PyTorch Dataset).
 - `train.py` – Training script to fine-tune Qwen2.5-Omni-7B on the synthetic dataset using LoRA, with live logging to wandb.
 - `demo.py` – Inference script to load the fine-tuned model and predict the label for a given video file.
+- `demo.ipynb` – Inference script that also shows you the video.
 
 ## Setup Instructions
 
