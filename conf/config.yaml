@@ -8,6 +8,8 @@ dataset:
   frames_per_video: 96   # number of frames each video will have after augmentations
   frame_height: 56       # height of video frames (pixels)
   frame_width: 56        # width of video frames (pixels)
+  fps: 24        # width of video frames (pixels)
+
   max_skip: 1          # maximum temporal stride for frame skipping augmentation
   seed: 42               # random seed for data generation (ensures reproducibility)
   temp_folder: "./temp_videos/"
@@ -30,14 +32,14 @@ model:
   print_parameters: True
 
 train:
-  batch_size: 4
+  batch_size: 3
   num_epochs: 8
   learning_rate: 2e-5 
   precision: "bf16"   # computation precision: "fp16", "bf16", or "fp32"
   system_prompt: 'You are Qwen, a virtual human developed by the Qwen Team, Alibaba Group, capable of perceiving auditory and visual inputs, as well as generating text and speech.'  # prompt to guide the model's behavior
   val_split: 0.2
   eval_after_steps: 10000
-
+  contrastive_loss_weight: 0.1  # or adjust this hyperparameter accordingly
 wandb:
   project: "qwen-video-classification"
   run_name: "qwen_lora_run"

@@ -4,7 +4,7 @@ import logging
 import wandb
 import hydra
 from omegaconf import OmegaConf, DictConfig
-from utils import SuppressQwenWarnings, evaluate_model, get_data_loaders, get_model_and_processor, print_model_params
+from utils import SuppressQwenWarnings, evaluate_model, get_data_loaders, get_model_and_processor, print_model_params, contrastive_loss
 
 
 @hydra.main(config_path="conf", config_name="config", version_base=None)
@@ -26,6 +26,8 @@ def main(cfg: DictConfig):
 
     # Set up optimizer (only parameters with requires_grad=True, which will be the LoRA parameters)
     optimizer = torch.optim.AdamW([p for p in model.parameters() if p.requires_grad], lr=cfg.train.learning_rate)
+    
+    contrastive_loss_weight = cfg.train.get('contrastive_loss_weight', 0.1)  # Set in your config.yaml
 
     # Training loop
     global_step = 0
@@ -35,8 +37,25 @@ def main(cfg: DictConfig):
         for step, batch in enumerate(train_loader):
             batch_dict = {k: v.to(model.device) if isinstance(v, torch.Tensor) else v
                     for k, v in batch.items()}
-            outputs = model(**batch_dict, use_audio_in_video=False)
-            loss = outputs.loss
+            label_ids = batch_dict.pop("label_ids", None)
+            outputs = model(**batch_dict, use_audio_in_video=False, output_hidden_states=True)
+            lm_loss = outputs.loss
+
+            # Extract embeddings (take the last hidden state of the first token as embedding)
+            hidden_states = outputs.hidden_states[-1][-1]  # final layer, shape: (B, seq_len, hidden_dim)
+            attention_mask = batch_dict["attention_mask"]
+
+            # Mean-pool over non-padding tokens
+            attention_mask = batch_dict["attention_mask"].unsqueeze(-1).to(hidden_states[-1].dtype)
+            masked_hidden = hidden_states * attention_mask  # zero out padded positions
+            embedding_sum = masked_hidden.sum(dim=1)        # (B, hidden_dim)
+            lengths = attention_mask.sum(dim=1)             # (B, 1)
+            mean_pooled = embedding_sum / lengths.clamp(min=1e-6)  # Avoid division by zero
+
+            contr_loss = contrastive_loss(mean_pooled, label_ids)
+            # Combine losses
+            loss = lm_loss + contrastive_loss_weight * contr_loss
+            print("lm_loss",lm_loss,"contrastive loss", contr_loss)
 
             # Backpropagation
             optimizer.zero_grad()

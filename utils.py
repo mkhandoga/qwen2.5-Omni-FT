@@ -13,6 +13,7 @@ from PIL import Image
 import numpy as np
 import imageio
 import hashlib
+import torch.nn.functional as F
 
 class SuppressQwenWarnings(logging.Filter):
     def filter(self, record):
@@ -249,8 +250,7 @@ class QwenChatVideoCollator:
                 labels[i, start_idx:real_length] = input_ids[i, start_idx:real_length]
 
             inputs["labels"] = labels
-        else:
-            inputs["label_ids"] = torch.tensor([label_id for (_, label_id) in batch])
+        inputs["label_ids"] = torch.tensor([label_id for (_, label_id) in batch])
         return inputs  
 
 
@@ -368,3 +368,21 @@ def print_model_params(model):
         if param.requires_grad:
             trainable_params += param.numel()
     print(f"Model loaded. Total parameters: {total_params}, Trainable (LoRA) parameters: {trainable_params}")
+
+
+def contrastive_loss(embeddings, labels, temperature=0.07):
+    normed = F.normalize(embeddings, dim=-1)  # (B, D)
+    logits = normed @ normed.T  # cosine similarity matrix (B, B)
+    logits /= temperature
+
+    labels = labels.unsqueeze(0) == labels.unsqueeze(1)  # (B, B) similarity mask
+    labels = labels.float()
+
+    # Mask out self-comparisons
+    mask = torch.eye(labels.size(0), device=labels.device)
+    labels = labels * (1 - mask)
+
+    # Contrastive loss
+    log_probs = F.log_softmax(logits, dim=1)
+    loss = -(labels * log_probs).sum(dim=1) / labels.sum(dim=1).clamp(min=1e-6)
+    return loss.mean()
